@@ -11,6 +11,9 @@ source /usr/share/yunohost/helpers
 # INITIALIZE AND STORE SETTINGS
 #=================================================
 
+secret_key=$(ynh_string_random --length=32)
+ynh_app_setting_set --key=secret_key --value=$secret_key
+
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
@@ -24,7 +27,8 @@ chown -R "$app:www-data" "$install_dir"
 #=================================================
 ynh_script_progression "Adding $app's configuration files..."
 
-ynh_config_add --template="some_config_file" --destination="$install_dir/some_config_file"
+mkdir $install_dir/cms
+ynh_config_add --template="local_settings.py" --destination="$install_dir/cms/local_settings.py"
 
 chmod 400 "$install_dir/some_config_file"
 chown "$app:$app" "$install_dir/some_config_file"
