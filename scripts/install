@@ -14,6 +14,8 @@ source /usr/share/yunohost/helpers
 secret_key=$(ynh_string_random --length=32)
 ynh_app_setting_set --key=secret_key --value=$secret_key
 
+email=$(ynh_user_get_info --username="$admin" --key="mail")
+
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
@@ -35,6 +37,15 @@ chown "$app:$app" "$install_dir/some_config_file"
 
 pushd $install_dir
   pip install -r requirements.txt
+  python manage.py migrate
+  python manage.py loaddata fixtures/encoding_profiles.json
+  python manage.py loaddata fixtures/categories.json
+  python manage.py collectstatic --noinput
+
+  echo "from users.models import User; User.objects.create_superuser('$admin', '$email', '$password')" | python manage.py shell
+
+  echo "from django.contrib.sites.models import Site; Site.objects.update(name='$domain/$path', domain='$domain/$path')" | python manage.py shell
+
 popd
 
 #=================================================
