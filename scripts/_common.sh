@@ -14,3 +14,10 @@ rm -rf tmp ffmpeg-release-amd64-static.tar.xz
 echo "ffmpeg installed to /usr/local/bin"
 }
 
+install_hls () {
+# Bento4 utility installation, for HLS
+wget http://zebulon.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-637.x86_64-unknown-linux.zip
+unzip Bento4-SDK-1-6-0-637.x86_64-unknown-linux.zip
+mkdir /home/mediacms.io/mediacms/media_files/hls
+rm Bento4-SDK-1-6-0-637.x86_64-unknown-linux.zip
+}
